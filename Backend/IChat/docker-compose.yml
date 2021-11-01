@@ -1,0 +1,12 @@
+version: '3.4'
+
+services: 
+  postgres:
+    container_name: postgres_db
+    image: postgres
+    environment: 
+      POSTGRES_USER: "IChat"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "ichat_database"
+    ports:
+      - 5432:5432
