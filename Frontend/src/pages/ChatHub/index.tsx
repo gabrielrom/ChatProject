@@ -24,6 +24,7 @@ import { ChannnelsData, MessageData  } from '../../interfaces';
 
 import iconButtonChannel from '../../assets/icon-channel-button.png';
 import iconSignout from '../../assets/signout-icon.png';
+import Modal from '../../components/Modal';
 
 const ChatHub: React.FC = () => {
   const messagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
@@ -33,6 +34,7 @@ const ChatHub: React.FC = () => {
   const { user, signOut } = useAuth();
 
   const [ channelActive, setChannelActive ] = useState("InitialChannelHub");
+  const [ showModal, setShowModal ] = useState(false);
 
   useEffect(() => {
     const div = messagesRef.current;
@@ -73,6 +75,8 @@ const ChatHub: React.FC = () => {
 
   return (
     <Container>
+
+      <Modal onClose={() => setShowModal(false)} show={showModal}/> 
       
       <ChannelList>
 
@@ -87,7 +91,7 @@ const ChatHub: React.FC = () => {
           }} />
         })}
 
-        <ChannelButton type="button" image={iconButtonChannel}/>
+        <ChannelButton type="button" image={iconButtonChannel} onClick={() => setShowModal(true) }/>
       </ChannelList>
 
       <SignoutButtonContainer>
