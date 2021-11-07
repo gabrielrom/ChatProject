@@ -20,10 +20,10 @@ export const Container = styled.div`
   grid-template-areas: 
     'CL CI'
     'CL CD'
-    'CL CS';
-
+    'SO CS';
 
   height: 100vh;
+  background-color: #12141D;
 `;
 
 export const ChannelList = styled.div`
@@ -91,8 +91,9 @@ export const InputWrapper = styled.div`
   grid-area: CS;
   
   padding: 20px 145px;
+  margin-top: auto;
   background-color: #12141D;
-
+  
   form {
     display: flex;
     flex-direction: row;
@@ -128,4 +129,38 @@ export const InitialChannelInfo = styled.div`
 export const InitialInputWrapper = styled.div`
   grid-area: CS;
   background-color: #12141D;
+`;
+
+export const SignoutButtonContainer = styled.div`
+  grid-area: SO;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #20222E;
+
+  padding: 28px 20px;
+`;
+
+export const SignoutButton = styled.button<ChannelButtonProps>`
+  height: 55px;
+  width: 55px;
+  cursor: pointer;
+  padding: 28px 10px;
+  margin-top: -0.4vh;
+
+  border: none;
+  border-radius: 10px;
+  background: ${shade(-0.3, "#12141D")};
+  
+  background-image: url(${props => props.image});
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  transition: transform 280ms;
+
+  :hover {
+    transform: translateY(-5px);
+  }
+
 `;

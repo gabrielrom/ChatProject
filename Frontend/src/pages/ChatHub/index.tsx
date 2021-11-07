@@ -4,17 +4,13 @@ import {
   Container,
   ChannelList,
   Channel,
-  // ChannelInfo,
-  // ChannelData,
   ChannelButton,
-  // ChannelInfoName,
-  // ChannelInfoMembers,
-  // Message,
-  // MyMessage,
   InitialChannelHub, 
   InitialChannelInfo,
   InputWrapper,
-  InitialInputWrapper
+  InitialInputWrapper,
+  SignoutButton,
+  SignoutButtonContainer
  } from './styles';
 
 import { useAuth } from '../../hooks/auth';
@@ -26,8 +22,8 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { ChannnelsData, MessageData  } from '../../interfaces';
 
-import imageChannel from '../../assets/image-channel.png';
 import iconButtonChannel from '../../assets/icon-channel-button.png';
+import iconSignout from '../../assets/signout-icon.png';
 
 const ChatHub: React.FC = () => {
   const messagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
@@ -81,63 +77,69 @@ const ChatHub: React.FC = () => {
       <ChannelList>
 
         {channels.map(channel => {
-          return <Channel key={channel.id} type="button" image={channel.imageUrl} onClick={() => { 
-            connection.invoke("JoinToGroup", channel.id).then().catch(err => console.log(err));
-            setChannelActive(channel.id)
+          return <Channel key={channel.id} type="button" image={channel.imageUrl} onClick={() => {
+            if (channelActive === channel.id) {
+              setChannelActive(channel.id)
+            } else {
+              connection.invoke("JoinToGroup", channel.id).then().catch(err => console.log(err));
+              setChannelActive(channel.id)
+            }
           }} />
         })}
-        
-        <Channel type="button" image={imageChannel} onClick={signOut}/>
 
         <ChannelButton type="button" image={iconButtonChannel}/>
-
       </ChannelList>
 
-        {
-          channelActive === "InitialChannelHub"
+      <SignoutButtonContainer>
+        <SignoutButton type="button" image={iconSignout} onClick={signOut}/>
+      </SignoutButtonContainer>
+      
+
+      {
+        channelActive === "InitialChannelHub"
+        &&
+        <>
+          <InitialChannelHub />
+          <InitialChannelInfo />
+          <InitialInputWrapper />
+        </>
+      }
+
+      {
+        channels.map(channel => 
+          channelActive === channel.id 
           &&
           <>
-            <InitialChannelHub />
-            <InitialChannelInfo />
-            <InitialInputWrapper />
+            <ChannelHub 
+              key={channel.name}
+              channelName={channel.name}
+              channelCountMembers={channel.countMembers}
+              channelImage={channel.imageUrl}
+              imageMembers={channel.users}
+              messages={messages.filter((message, index) => message.channelName === channel.name && messages.indexOf(message) === index)}
+            />
+
+            <InputWrapper key={Math.random()}>
+              <Form onSubmit={sendMessageHandle}>
+                <Input
+                  name="sendMessage"
+                  inputTextSize="14px"
+                  height="35px"
+                  backgroundColor="#20222E"
+                  colorText="#d4d4d4"
+                  placeholder="Digite sua mensagem aqui..."
+                />
+                <Button 
+                  type="submit"
+                  buttonColor="#0760E0"
+                  buttonHeight="45px"
+                  buttonWidth="113px"
+                  textSize="14px">Enviar</Button>
+              </Form>
+            </InputWrapper>
           </>
-        }
-
-        {
-          channels.map(channel => 
-            channelActive === channel.id 
-            &&
-            <>
-              <ChannelHub 
-                key={channel.name}
-                channelName={channel.name}
-                channelCountMembers={channel.countMembers}
-                channelImage={channel.imageUrl}
-                imageMembers={channel.users}
-                messages={messages.filter((message, index) => message.channelName === channel.name && messages.indexOf(message) === index)}
-              />
-
-              <InputWrapper key={Math.random()}>
-                <Form onSubmit={sendMessageHandle}>
-                  <Input
-                    name="sendMessage"
-                    inputTextSize="14px"
-                    height="35px"
-                    backgroundColor="#20222E"
-                    colorText="#d4d4d4"
-                    placeholder="Digite sua mensagem aqui..."
-                  />
-                  <Button 
-                    type="submit"
-                    buttonColor="#0760E0"
-                    buttonHeight="45px"
-                    buttonWidth="113px"
-                    textSize="14px">Enviar</Button>
-                </Form>
-              </InputWrapper>
-            </>
-          )
-        }
+        )
+      }
     </Container>
   );
 }
